@@ -16,7 +16,7 @@ function QuizForm({ onSubmit, loading }) {
         onChange={(e) => setTopic(e.target.value)}
         placeholder="Paste your notes or type a topic, like 'Photosynthesis' or 'World War 2 causes'"
         rows={5}
-        className="border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
       <button
         type="submit"

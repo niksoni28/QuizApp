@@ -10,7 +10,7 @@ function ResultsView({ questions, answers, onRetestWrong, onStartOver }) {
 
   return (
     <div className="w-full max-w-xl">
-      <h2 className="text-xl font-semibold mb-1">
+      <h2 className="text-xl font-semibold mb-1 text-gray-900 dark:text-white">
         You got {score} out of {results.length} correct
       </h2>
 
@@ -18,8 +18,10 @@ function ResultsView({ questions, answers, onRetestWrong, onStartOver }) {
         {results.map((r, index) => (
           <div
             key={index}
-            className={`border rounded-lg p-3 text-sm ${
-              r.isCorrect ? "border-green-300 bg-green-50" : "border-red-300 bg-red-50"
+            className={`border rounded-lg p-3 text-sm dark:text-white ${
+              r.isCorrect
+                ? "border-green-300 bg-green-50 dark:bg-green-950 dark:border-green-700"
+                : "border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-700"
             }`}
           >
             <p className="font-medium mb-1">{r.question}</p>
@@ -30,7 +32,7 @@ function ResultsView({ questions, answers, onRetestWrong, onStartOver }) {
                 : r.options[r.userAnswer]}
             </p>
             {!r.isCorrect && (
-              <p className="text-green-700">
+              <p className="text-green-700 dark:text-green-400">
                 Correct answer: {r.options[r.correctIndex]}
               </p>
             )}
@@ -49,7 +51,7 @@ function ResultsView({ questions, answers, onRetestWrong, onStartOver }) {
         )}
         <button
           onClick={onStartOver}
-          className="border border-gray-300 rounded-lg py-2 px-4 font-medium hover:bg-gray-50"
+          className="border border-gray-300 dark:border-gray-600 dark:text-white rounded-lg py-2 px-4 font-medium hover:bg-gray-50 dark:hover:bg-gray-800"
         >
           New Quiz
         </button>
