@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import QuizForm from "./components/QuizForm";
 import QuizView from "./components/QuizView";
 import ResultsView from "./components/ResultsView";
@@ -9,20 +9,32 @@ function App() {
   const [error, setError] = useState(null);
   const [activeQuestions, setActiveQuestions] = useState(null);
   const [finalAnswers, setFinalAnswers] = useState(null);
+  const [lastTopic, setLastTopic] = useState("");
 
-  async function handleGenerate(topic) {
+  const requestIdRef = useRef(0);
+
+  async function runGenerate(topic) {
+    const thisRequestId = ++requestIdRef.current;
+
     setLoading(true);
     setError(null);
     setActiveQuestions(null);
     setFinalAnswers(null);
+    setLastTopic(topic);
 
     try {
       const data = await fetchQuiz(topic);
+
+      if (thisRequestId !== requestIdRef.current) return;
+
       setActiveQuestions(data.questions);
     } catch (err) {
+      if (thisRequestId !== requestIdRef.current) return;
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (thisRequestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   }
 
@@ -41,6 +53,10 @@ function App() {
     setError(null);
   }
 
+  function handleRetry() {
+    if (lastTopic) runGenerate(lastTopic);
+  }
+
   const showQuiz = activeQuestions && !finalAnswers;
   const showResults = activeQuestions && finalAnswers;
 
@@ -49,10 +65,20 @@ function App() {
       <h1 className="text-2xl font-semibold mb-6">Study Quiz Generator</h1>
 
       {!activeQuestions && (
-        <QuizForm onSubmit={handleGenerate} loading={loading} />
+        <QuizForm onSubmit={runGenerate} loading={loading} />
       )}
 
-      {error && <p className="text-red-600 mt-4 text-sm">{error}</p>}
+      {error && (
+        <div className="mt-4 text-center">
+          <p className="text-red-600 text-sm">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="mt-2 text-sm underline text-blue-600"
+          >
+            Try again
+          </button>
+        </div>
+      )}
 
       {showQuiz && (
         <QuizView questions={activeQuestions} onComplete={handleQuizComplete} />
